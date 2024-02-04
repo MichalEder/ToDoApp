@@ -29,7 +29,14 @@ class UserProfileManager(BaseUserManager):
         user.save(using=self.db)
 
         return user
+class TaskManager(models.Manager):
+    """Manager for tasks"""
 
+    def create_task(self,user, title, description, completed):
+        task = self.model(user=user, title=title, description=description, completed=completed)
+        task.save(using=self.db)
+
+        return task
 
 class UserProfile(AbstractBaseUser, PermissionsMixin):
     """Database model for users in the system"""
@@ -46,7 +53,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
     def get_full_name(self):
         """Retrieve full name of user"""
-        return f'{self.name}'
+        return f'{self.name} {self.surname}'
 
     def get_short_name(self):
         """"Retrieve short name of user"""
@@ -56,14 +63,15 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
         """Return string representation of user"""
         return self.email
 
+
 class Task(models.Model):
     """Model for tasks"""
     user = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField()
     completed = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
+
+    objects = TaskManager()
     def __str__(self):
         return self.title
