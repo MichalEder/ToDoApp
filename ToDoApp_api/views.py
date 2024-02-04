@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
+from rest_framework import filters
 
 from ToDoApp_api import serializers
 from ToDoApp_api import models
@@ -93,6 +94,8 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = models.UserProfile.objects.all()
     authentication_classes = (TokenAuthentication,)
     permission_classes = (permissions.UpdateOwnProfile,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name', 'email', 'surname')
 
 class TaskViewSet(viewsets.ModelViewSet):
     """Handles creating and updating tasks"""
@@ -100,3 +103,5 @@ class TaskViewSet(viewsets.ModelViewSet):
     queryset = models.Task.objects.all()
     authentication_classes = (TokenAuthentication,)
     permission_classes = (permissions.UpdateOwnTask,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('user_email', 'title', 'description')

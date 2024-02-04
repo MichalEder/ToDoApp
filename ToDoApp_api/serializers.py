@@ -44,12 +44,13 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Task
-        fields = ('user', 'title', 'description', 'completed')
+        fields = ('user', 'user_email', 'title', 'description', 'completed')
 
     def create(self, validated_data):
         """Create and return a new user"""
         task = (models.Task.objects.create_task(
             user=validated_data['user'],
+            user_email=validated_data['user_email'],
             title=validated_data['title'],
             description=validated_data['description'],
             completed=validated_data['completed'],

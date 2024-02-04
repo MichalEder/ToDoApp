@@ -32,8 +32,8 @@ class UserProfileManager(BaseUserManager):
 class TaskManager(models.Manager):
     """Manager for tasks"""
 
-    def create_task(self,user, title, description, completed):
-        task = self.model(user=user, title=title, description=description, completed=completed)
+    def create_task(self, user,user_email, title, description, completed):
+        task = self.model(user=user,user_email=user_email, title=title, description=description, completed=completed)
         task.save(using=self.db)
 
         return task
@@ -67,11 +67,17 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 class Task(models.Model):
     """Model for tasks"""
     user = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
+    user_email = models.EmailField(blank=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
     completed = models.BooleanField(default=False)
 
 
     objects = TaskManager()
+
+    def save(self, *args, **kwargs):
+        # Automatically populate user_email from associated UserProfile
+        self.user_email = self.user.email
+        super().save(*args, **kwargs)
     def __str__(self):
         return self.title
