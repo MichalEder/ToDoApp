@@ -6,6 +6,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework import filters
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
+from rest_framework.permissions import IsAuthenticated
 
 from ToDoApp_api import serializers
 from ToDoApp_api import models
@@ -104,9 +105,15 @@ class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.TaskSerializer
     queryset = models.Task.objects.all()
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (permissions.UpdateOwnTask,)
+    permission_classes = (
+        permissions.UpdateOwnTask,
+        IsAuthenticated
+    )
     filter_backends = (filters.SearchFilter,)
     search_fields = ('user_email', 'title', 'description')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 class UserLoginApiView(ObtainAuthToken):
     """Handles creating user authentication tokens"""

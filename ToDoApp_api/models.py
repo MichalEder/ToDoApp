@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
+from django.conf import settings
 
 class UserProfileManager(BaseUserManager):
     """Manager for user profiles"""
@@ -66,18 +67,21 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
 class Task(models.Model):
     """Model for tasks"""
-    user = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
-    user_email = models.EmailField(blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    email = models.EmailField(blank=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
     completed = models.BooleanField(default=False)
 
 
     objects = TaskManager()
 
     def save(self, *args, **kwargs):
-        # Automatically populate user_email from associated UserProfile
-        self.user_email = self.user.email
+        # Automatically populate the email field based on the associated user's email
+        if not self.email and self.user:
+            self.email = self.user.email
+
         super().save(*args, **kwargs)
     def __str__(self):
         return self.title
