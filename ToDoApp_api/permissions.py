@@ -1,7 +1,6 @@
 from rest_framework import permissions
 
 
-
 class UpdateOwnProfile(permissions.BasePermission):
     """allow user to edit their own profile """
 
@@ -11,6 +10,7 @@ class UpdateOwnProfile(permissions.BasePermission):
             return True
 
         return obj.id == request.user.id
+
 
 class UpdateOwnTask(permissions.BasePermission):
     """allow user to edit their own tasks """
