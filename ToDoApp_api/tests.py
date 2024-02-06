@@ -1,4 +1,3 @@
-import os
 from django.urls import reverse
 from rest_framework.test import APIClient, APITestCase
 from rest_framework import status
@@ -51,22 +50,20 @@ class UserProfileViewSetTestCase(APITestCase):
 
 
     def test_delete_profile(self):
-        # Delete the profile
+        """Delete the profile"""
         url = reverse('profile-detail', kwargs={'pk': self.user.pk})
         response = self.client.delete(url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)  # Ensure successful deletion
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         # Check if the profile no longer exists
         retrieve_url = reverse('profile-detail', kwargs={'pk': self.user.pk})
         retrieve_response = self.client.get(retrieve_url)
-        self.assertEqual(retrieve_response.status_code, status.HTTP_404_NOT_FOUND)  # Ensure profile is not found
+        self.assertEqual(retrieve_response.status_code, status.HTTP_404_NOT_FOUND)
+        # Check if the profile is not found
 
     def test_update_profile(self):
-        """
-        Test updating a user profile.
-        """
+        """Test updating a user profile."""
 
-        # Make PUT request to update the profile
         url = reverse('profile-detail', kwargs={'pk': self.user.pk})
         data = {
             'name': 'Updated Name',
@@ -76,7 +73,6 @@ class UserProfileViewSetTestCase(APITestCase):
         }
         response = self.client.put(url, data)
 
-        # Check if the response status code is as expected
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Check if the profile is updated in the database
@@ -89,8 +85,6 @@ class UserProfileViewSetTestCase(APITestCase):
     def test_partial_update_profile(self):
         """Test partially updating a user profile."""
 
-
-        # Make PATCH request to partially update the profile
         url = reverse('profile-detail', kwargs={'pk': self.user.pk})
         data = {
             'name': 'Updated Name',
@@ -98,14 +92,13 @@ class UserProfileViewSetTestCase(APITestCase):
         }
         response = self.client.patch(url, data)
 
-        # Check if the response status code is as expected
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Check if the profile is partially updated in the database
         updated_profile = UserProfile.objects.get(pk=self.user.pk)
         self.assertEqual(updated_profile.name, 'Updated Name')
         self.assertEqual(updated_profile.surname, 'Updated Surname')
-        # Ensure that other fields remain unchanged
+        # Check if other fields remain unchanged
         self.assertEqual(updated_profile.email, 'test@example.com')
 
 
@@ -161,7 +154,12 @@ class TaskViewSetTestCase(APITestCase):
         }
         response = self.client.put(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        updated_task = Task.objects.get(pk=task.pk)
+        self.assertEqual(updated_task.title, 'Updated task title')
+        self.assertEqual(updated_task.description, 'Updated task description')
         # Check if the task is updated correctly in the database
+
 
     def test_partial_update_task(self):
         """Test partially updating a task"""
@@ -176,7 +174,13 @@ class TaskViewSetTestCase(APITestCase):
         }
         response = self.client.patch(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
         # Check if the task is partially updated correctly in the database
+        updated_task = Task.objects.get(pk=task.pk)
+        self.assertEqual(updated_task.title, 'Updated task title')
+
+        # Check if other fields remain unchanged
+        self.assertEqual(task.description, 'Test task description')
 
     def test_delete_task(self):
         """Test deleting a task"""
@@ -188,6 +192,10 @@ class TaskViewSetTestCase(APITestCase):
         url = reverse('task-detail', kwargs={'pk': task.pk})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        retrieve_url = reverse('task-detail', kwargs={'pk': task.pk})
+        retrieve_response = self.client.get(retrieve_url)
+        self.assertEqual(retrieve_response.status_code, status.HTTP_404_NOT_FOUND)
         # Check if the task is deleted correctly from the database
 
 
