@@ -39,7 +39,6 @@ class UserProfileViewSetTestCase(APITestCase):
             'password': 'somepassword'
         }
         response = self.client.post(url, data)
-        self.assertEqual(response.status_code, 201)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Check if the profile is actually created in the database
@@ -49,3 +48,13 @@ class UserProfileViewSetTestCase(APITestCase):
             email='john@example.com'
         ).exists()
         self.assertTrue(profile_exists, "Profile should have been created in the database.")
+    def test_delete_profile(self):
+        # Delete the profile
+        url = reverse('profile-detail', kwargs={'pk': self.user.pk})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)  # Ensure successful deletion
+
+        # Check if the profile no longer exists
+        retrieve_url = reverse('profile-detail', kwargs={'pk': self.user.pk})
+        retrieve_response = self.client.get(retrieve_url)
+        self.assertEqual(retrieve_response.status_code, status.HTTP_404_NOT_FOUND)  # Ensure profile is not found
