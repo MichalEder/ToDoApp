@@ -146,6 +146,7 @@ class TaskViewSetTestCase(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Add more assertions to check retrieved data if needed
+
     def test_update_task(self):
         """Test updating a task"""
         task = Task.objects.create(
@@ -161,3 +162,18 @@ class TaskViewSetTestCase(APITestCase):
         response = self.client.put(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Check if the task is updated correctly in the database
+
+    def test_partial_update_task(self):
+        """Test partially updating a task"""
+        task = Task.objects.create(
+            user=self.user,
+            title='Test task',
+            description='Test task description'
+        )
+        url = reverse('task-detail', kwargs={'pk': task.pk})
+        data = {
+            'title': 'Updated task title',
+        }
+        response = self.client.patch(url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Check if the task is partially updated correctly in the database
