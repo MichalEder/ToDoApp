@@ -107,3 +107,19 @@ class UserProfileViewSetTestCase(APITestCase):
         self.assertEqual(updated_profile.surname, 'Updated Surname')
         # Ensure that other fields remain unchanged
         self.assertEqual(updated_profile.email, 'test@example.com')
+
+
+class TaskViewSetTestCase(APITestCase):
+    """Test case for UserProfileViewSet"""
+
+    def setUp(self):
+        """Set up initial data for each test"""
+        self.client = APIClient()
+        self.user = UserProfile.objects.create_user(
+            name='testname',
+            surname='testsurname',
+            email='test@example.com',
+            password='password123'
+        )
+
+        self.client.force_authenticate(user=self.user)
