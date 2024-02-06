@@ -25,7 +25,7 @@ class UserProfileViewSetTestCase(APITestCase):
         """Test retrieving profile according to id"""
         url = reverse('profile-detail', kwargs={'pk': self.user.pk})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         serializer = UserProfileSerializer(instance=self.user)
         self.assertEqual(response.data, serializer.data)
 
@@ -40,3 +40,12 @@ class UserProfileViewSetTestCase(APITestCase):
         }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Check if the profile is actually created in the database
+        profile_exists = UserProfile.objects.filter(
+            name='John',
+            surname='Doe',
+            email='john@example.com'
+        ).exists()
+        self.assertTrue(profile_exists, "Profile should have been created in the database.")
