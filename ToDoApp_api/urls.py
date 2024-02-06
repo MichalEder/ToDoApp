@@ -3,13 +3,11 @@ from rest_framework.routers import DefaultRouter
 from ToDoApp_api import views
 
 router = DefaultRouter()
-router.register('hello-viewset', views.HelloViewSet, base_name='hello-viewset')
-router.register('profile', views.UserProfileViewSet)
-router.register('task', views.TaskViewSet)
+router.register('profile', views.UserProfileViewSet, basename='profile')
+router.register('task', views.TaskViewSet, basename='task')
 
 
 urlpatterns = [
-    path('hello-view/', views.HelloApiView.as_view()),
     path('login/', views.UserLoginApiView.as_view()),
     path('', include(router.urls))
 ]
