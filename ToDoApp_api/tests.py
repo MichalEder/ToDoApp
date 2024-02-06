@@ -123,3 +123,13 @@ class TaskViewSetTestCase(APITestCase):
         )
 
         self.client.force_authenticate(user=self.user)
+
+    def test_create_task(self):
+        """Test creating a new task"""
+        url = reverse('task-list')
+        data = {
+            'title': 'Test task',
+            'description': 'Test task description'
+        }
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
