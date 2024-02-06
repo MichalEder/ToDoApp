@@ -43,15 +43,3 @@ class TaskSerializer(serializers.ModelSerializer):
         extra_kwargs = {'user': {'read_only': True},
                         'email': {'read_only': True}}
 
-    # def create(self, validated_data):
-    #     """Create and return a new user"""
-    #     task = (models.Task.objects.create_task(
-    #         user=validated_data['user'],
-    #         user_email=validated_data['user_email'],
-    #         title=validated_data['title'],
-    #         description=validated_data['description'],
-    #         completed=validated_data['completed'],
-    #         )
-    #     )
-
-    #    return task
