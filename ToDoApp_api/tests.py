@@ -177,3 +177,17 @@ class TaskViewSetTestCase(APITestCase):
         response = self.client.patch(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Check if the task is partially updated correctly in the database
+
+    def test_delete_task(self):
+        """Test deleting a task"""
+        task = Task.objects.create(
+            user=self.user,
+            title='Test task',
+            description='Test task description'
+        )
+        url = reverse('task-detail', kwargs={'pk': task.pk})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        # Check if the task is deleted correctly from the database
+
+
