@@ -84,3 +84,26 @@ class UserProfileViewSetTestCase(APITestCase):
         self.assertEqual(updated_profile.name, 'Updated Name')
         self.assertEqual(updated_profile.surname, 'Updated Surname')
         self.assertEqual(updated_profile.email, 'updated_email@example.com')
+
+
+    def test_partial_update_profile(self):
+        """Test partially updating a user profile."""
+
+
+        # Make PATCH request to partially update the profile
+        url = reverse('profile-detail', kwargs={'pk': self.user.pk})
+        data = {
+            'name': 'Updated Name',
+            'surname': 'Updated Surname',
+        }
+        response = self.client.patch(url, data)
+
+        # Check if the response status code is as expected
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Check if the profile is partially updated in the database
+        updated_profile = UserProfile.objects.get(pk=self.user.pk)
+        self.assertEqual(updated_profile.name, 'Updated Name')
+        self.assertEqual(updated_profile.surname, 'Updated Surname')
+        # Ensure that other fields remain unchanged
+        self.assertEqual(updated_profile.email, 'test@example.com')
