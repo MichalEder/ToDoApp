@@ -48,6 +48,8 @@ class UserProfileViewSetTestCase(APITestCase):
             email='john@example.com'
         ).exists()
         self.assertTrue(profile_exists, "Profile should have been created in the database.")
+
+
     def test_delete_profile(self):
         # Delete the profile
         url = reverse('profile-detail', kwargs={'pk': self.user.pk})
@@ -58,3 +60,27 @@ class UserProfileViewSetTestCase(APITestCase):
         retrieve_url = reverse('profile-detail', kwargs={'pk': self.user.pk})
         retrieve_response = self.client.get(retrieve_url)
         self.assertEqual(retrieve_response.status_code, status.HTTP_404_NOT_FOUND)  # Ensure profile is not found
+
+    def test_update_profile(self):
+        """
+        Test updating a user profile.
+        """
+
+        # Make PUT request to update the profile
+        url = reverse('profile-detail', kwargs={'pk': self.user.pk})
+        data = {
+            'name': 'Updated Name',
+            'surname': 'Updated Surname',
+            'email': 'updated_email@example.com',
+            'password': 'newpassword'
+        }
+        response = self.client.put(url, data)
+
+        # Check if the response status code is as expected
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Check if the profile is updated in the database
+        updated_profile = UserProfile.objects.get(pk=self.user.pk)
+        self.assertEqual(updated_profile.name, 'Updated Name')
+        self.assertEqual(updated_profile.surname, 'Updated Surname')
+        self.assertEqual(updated_profile.email, 'updated_email@example.com')
