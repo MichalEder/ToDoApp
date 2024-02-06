@@ -124,6 +124,7 @@ class TaskViewSetTestCase(APITestCase):
 
         self.client.force_authenticate(user=self.user)
 
+
     def test_create_task(self):
         """Test creating a new task"""
         url = reverse('task-list')
@@ -133,3 +134,14 @@ class TaskViewSetTestCase(APITestCase):
         }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        """Test retrieving a task"""
+        task = Task.objects.create(
+            user=self.user,
+            title='Test task',
+            description='Test task description'
+        )
+        url = reverse('task-detail', kwargs={'pk': task.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Add more assertions to check retrieved data if needed
