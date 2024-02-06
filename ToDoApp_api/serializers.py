@@ -3,11 +3,6 @@ from rest_framework import serializers
 from ToDoApp_api import models
 
 
-class HelloSerializer(serializers.Serializer):
-    """Serializes name field for testing our APIVIew"""
-    name = serializers.CharField(max_length=20)
-
-
 class UserProfileSerializer(serializers.ModelSerializer):
     """Serializes a user profile object"""
     class Meta:
