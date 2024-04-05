@@ -1,1 +1,1 @@
-Small pet project where I learn how to work with DRF and testing API
+Experimenting with DRF and Postman – building my own API testing playground.
